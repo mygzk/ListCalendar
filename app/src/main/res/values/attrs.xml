@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="customCalendar">
+        <attr name="calendarDateTvSize" format="dimension" />
+        <attr name="calendarDateTvColor" format="color" />
+        <attr name="calendarDateLayH" format="dimension" />
+        <attr name="calendarWeekTvSize" format="dimension" />
+        <attr name="calendarWeekTvColor" format="color" />
+        <attr name="calendarWeekLayH" format="dimension" />
+        <attr name="calendarDayTvSize" format="dimension" />
+        <attr name="calendarDayTvColor" format="color" />
+        <attr name="calendarDayLayH" format="dimension" />
+    </declare-styleable>
+</resources>
