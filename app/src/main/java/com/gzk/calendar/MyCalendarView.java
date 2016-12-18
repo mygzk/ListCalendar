@@ -18,6 +18,7 @@ public class MyCalendarView extends RecyclerView {
     private TypedArray mTypedArray;
     private CalendarAdapter mAdapter;
     private LinearLayoutManager mLayoutManager;
+
     private int mCount = 0;
     //最大年份
     private int mMaxYear = 0;
@@ -51,23 +52,12 @@ public class MyCalendarView extends RecyclerView {
         updateItemCount();
     }
 
-    public void updateItemCount() {
-      /*  int count = 0;
-        int year = CalendarUtils.getCurrentYear();
-        int month = CalendarUtils.getCurrentMonth();
-        if (mMaxYear == 0 || mMaxYear <= year) {
-            mMaxYear = year + 1;
-        }
-        if (mMinYear == 0 || mMinYear >= year || mMinYear >= mMaxYear) {
-            mMinYear = year - 1;
-        }
-        count = (mMaxYear - mMinYear - 1) * 12;
-        mAdapter.updateCount(count);
-        int pos = (mMaxYear - year) * 12 + month;
-        mLayoutManager.scrollToPositionWithOffset(pos, 0);*/
 
+    public void updateItemCount() {
         mAdapter.updateCount(50);
     }
 
-
+    public void setIDayItemClickListener(CalendarItemView.IDayItemClickListener mIDayItemClickListener) {
+        mAdapter.setIDayItemClickListener(mIDayItemClickListener);
+    }
 }

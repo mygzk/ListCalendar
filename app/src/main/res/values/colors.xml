@@ -5,8 +5,13 @@
     <color name="colorAccent">#FF4081</color>
 
     <color name="week_color">#b7000000</color>
-
-    <color name="calendarDateTvColor">#222222</color>
+    <color name="calendarDateTvColor">#0c68e1</color>
     <color name="calendarWeekTvColor">#222222</color>
     <color name="calendarDayTvColor">#999999</color>
+    <color name="calendarTipTvColor">#0c68e1</color>
+    <color name="calendarTodayTvColor">#ffffff</color>
+    <color name="calendarSelectTvColor">#ffffff</color>
+
+    <color name="bg_today">#056df5</color>
+    <color name="bg_select">#d0ce5454</color>
 </resources>

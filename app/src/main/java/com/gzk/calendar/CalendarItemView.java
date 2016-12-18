@@ -3,13 +3,17 @@ package com.gzk.calendar;
 import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -45,8 +49,18 @@ public class CalendarItemView extends FrameLayout {
     private int mDayTvSize;
     //日期字体颜色
     private int mDayTvColor;
+    //今天字体颜色
+    private int mDayTodayTvColor;
+    //选中时候
+    private int mDaySelectTvColor;
+
     //日期布局高度
     private int mDayTvLayoutH;
+
+    //提示字体大小
+    private int mTipTvSize;
+    //提示字体颜色
+    private int mTipTvColor;
 
     private int year;
     private int month;
@@ -59,6 +73,10 @@ public class CalendarItemView extends FrameLayout {
     private int mCurrentMonth;
     private int mCurrentDay;
     private MonthBean mMonthBean;
+    private IDayItemClickListener mItemClick;
+
+    private Bitmap mTodayBitmap;
+    private Bitmap mSelectedBitmap;
 
     public CalendarItemView(Context context, TypedArray typedArray) {
         super(context);
@@ -85,6 +103,21 @@ public class CalendarItemView extends FrameLayout {
                 resources.getColor(R.color.calendarDayTvColor));
         mDayTvLayoutH = typedArray.getDimensionPixelSize(R.styleable.customCalendar_calendarDayLayH,
                 resources.getDimensionPixelSize(R.dimen.calendarDayLayH));
+
+        mTipTvSize = typedArray.getDimensionPixelSize(R.styleable.customCalendar_calendarTipTvSize,
+                resources.getDimensionPixelSize(R.dimen.calendarTipTvSize));
+        mTipTvColor = typedArray.getColor(R.styleable.customCalendar_calendarTipTvColor,
+                resources.getColor(R.color.calendarTipTvColor));
+        mDayTodayTvColor = typedArray.getColor(R.styleable.customCalendar_calendarTipTvColor,
+                resources.getColor(R.color.calendarTodayTvColor));
+        mDaySelectTvColor = typedArray.getColor(R.styleable.customCalendar_calendarTipTvColor,
+                resources.getColor(R.color.calendarSelectTvColor));
+        mSelectedBitmap = BitmapFactory.decodeResource(resources,
+                typedArray.getResourceId(R.styleable.customCalendar_calendarSelectedBg,
+                        R.drawable.bag_select_circle));
+        /*mSelectedBitmap = BitmapFactory.decodeResource(typedArray.getInt(R.styleable.customCalendar_calendarSelectedBg,
+                R.drawable.bag_select_circle));*/
+       /* typedArray.getIndex()*/
 
         initView(context);
     }
@@ -134,35 +167,91 @@ public class CalendarItemView extends FrameLayout {
         }
     }
 
-    private void initDay(MonthBean bean) {
+    private void initDay(final MonthBean bean) {
         mContentLayout.removeAllViews();
-        String date = bean.getYear() + "-" + (bean.getMonth() + 1) + "-1";
-        int startPos = CalendarUtils.getWeekByDate(date);
+        final String date = bean.getYear() + "-" + (bean.getMonth() + 1) + "-1";
+        final int startPos = CalendarUtils.getWeekByDate(date);
         int numDay = bean.getDayNum();
         double d = ((numDay + startPos) * 1d) / 7;
         int row = (int) Math.ceil(d);
         //日期具体数字
         for (int i = 0; i < row; i++) {
-            LinearLayout.LayoutParams dayItemLp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, mDayTvLayoutH);
+            LinearLayout.LayoutParams dayItemLp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                    mDayTvLayoutH);
             LinearLayout dayHRItemLayout = new LinearLayout(mContext);
             dayHRItemLayout.setLayoutParams(dayItemLp);
             dayHRItemLayout.setOrientation(LinearLayout.HORIZONTAL);
             for (int j = 0; j < 7; j++) {
-                LinearLayout.LayoutParams dayLp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                        ViewGroup.LayoutParams.WRAP_CONTENT);
+                final int day = i * 7 + j - startPos + 1;
+                FrameLayout tbFrameLayout = new FrameLayout(mContext);
+                LinearLayout.LayoutParams tvFrameLp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.MATCH_PARENT);
+                tvFrameLp.weight = 1;
+                tvFrameLp.gravity = Gravity.CENTER;
+                tbFrameLayout.setLayoutParams(tvFrameLp);
+
+                FrameLayout.LayoutParams tvLp = new FrameLayout.LayoutParams(mDayTvSize * 2,
+                        mDayTvSize * 2);
+                tvLp.gravity = Gravity.CENTER;
+                tvLp.setMargins(0, 0, 0, (mDayTvLayoutH / 6));
                 TextView tvDay = new TextView(mContext);
-                tvDay.setGravity(Gravity.CENTER);
+
+                tvDay.setGravity(Gravity.CENTER_VERTICAL|Gravity.CENTER_HORIZONTAL);
                 tvDay.setTextColor(mDayTvColor);
-                dayLp.weight = 1;
-                dayLp.gravity = Gravity.CENTER;
-                tvDay.setLayoutParams(dayLp);
+                tvDay.setLayoutParams(tvLp);
+
+                FrameLayout.LayoutParams imgLp = new FrameLayout.LayoutParams(mDayTvSize * 2,
+                        mDayTvSize * 2);
+                ImageView bgImg = new ImageView(mContext);
+                imgLp.gravity = Gravity.CENTER;
+                imgLp.setMargins(0, 0, 0, (mDayTvLayoutH / 6));
+                bgImg.setScaleType(ImageView.ScaleType.CENTER);
+                bgImg.setLayoutParams(imgLp);
+
+                FrameLayout.LayoutParams tvTipLp = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.WRAP_CONTENT);
+                TextView tvTip = new TextView(mContext);
+                tvTip.setGravity(Gravity.CENTER);
+                tvTipLp.setMargins(0, mDayTvLayoutH * 2 / 3, 0, 0);
+                tvTip.setLayoutParams(tvTipLp);
+                tvTip.setTextSize(TypedValue.COMPLEX_UNIT_PX, mTipTvSize);
+                tvTip.setTextColor(mTipTvColor);
+
                 if ((i == 0 && startPos != 0 && j < startPos) || ((i * 7 + j - startPos + 1) > numDay)) {
-                    dayHRItemLayout.addView(tvDay);
+                    tvDay.setTextColor(mDayTvColor);
+                    tbFrameLayout.addView(tvDay);
                 } else {
-                    tvDay.setText((i * 7 + j - startPos + 1) + "");
+                    tbFrameLayout.setOnClickListener(new OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if (mItemClick != null) {
+                                mItemClick.dayClick(bean.getYear(), bean.getMonth(), day, startPos);
+                            }
+                        }
+                    });
+                    tvDay.setText(day + "");
+                    tvDay.setTextColor(mDayTvColor);
                     tvDay.setTextSize(TypedValue.COMPLEX_UNIT_PX, mDayTvSize);
-                    dayHRItemLayout.addView(tvDay);
+                    if (bean.getYear() == mCurrentYear && bean.getMonth() == mCurrentMonth && day == mCurrentDay) {
+                        tvDay.setTextColor(mDayTodayTvColor);
+                        bgImg.setImageDrawable(mContext.getResources().getDrawable(R.drawable.bag_current_circle));
+                       // tvDay.setBackground(mContext.getResources().getDrawable(R.drawable.bag_current_circle));
+                    } else {
+                        if (bean.getDays().get(day - 1).isTip()) {
+                            tvDay.setTextColor(mDaySelectTvColor);
+                           // tvDay.setBackground(mContext.getResources().getDrawable(R.drawable.bag_select_circle));
+                            bgImg.setImageDrawable(mContext.getResources().getDrawable(R.drawable.bag_select_circle));
+                           /* if (mSelectedBitmap != null) {
+                                bgImg.setImageBitmap(mSelectedBitmap);
+                            }*/
+                        }
+                    }
+
+                    tbFrameLayout.addView(bgImg);
+                    tbFrameLayout.addView(tvTip);
+                    tbFrameLayout.addView(tvDay);
                 }
+                dayHRItemLayout.addView(tbFrameLayout);
             }
             mContentLayout.addView(dayHRItemLayout);
         }
@@ -196,6 +285,14 @@ public class CalendarItemView extends FrameLayout {
         if (mMonthBean != null) {
             mTvDateLable.setText(mMonthBean.getYear() + "年" + (mMonthBean.getMonth() + 1) + "月");
         }
+    }
+
+    public void setItemClick(IDayItemClickListener mItemClick) {
+        this.mItemClick = mItemClick;
+    }
+
+    public interface IDayItemClickListener {
+        void dayClick(int year, int month, int day, int week);
     }
 
 

@@ -21,7 +21,7 @@ import java.util.Map;
  * Created by guozhk on 2016/12/17.
  */
 
-public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.CalendarHolder> {
+public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.CalendarHolder> implements CalendarItemView.IDayItemClickListener {
     private int mCount;
     private Context mContext;
     private TypedArray mTypedArray;
@@ -29,6 +29,8 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.Calend
     private int mCurrentYear;
     private int mCurrentMonth;
     private int mCurrentDay;
+
+    private CalendarItemView.IDayItemClickListener mIDayItemClickListener;
 
 
     public CalendarAdapter(Context mContext, TypedArray typedArray) {
@@ -49,7 +51,8 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.Calend
 
     @Override
     public CalendarHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        final CalendarItemView itemView = new CalendarItemView(parent.getContext(), mTypedArray);
+        CalendarItemView itemView = new CalendarItemView(parent.getContext(), mTypedArray);
+        itemView.setItemClick(this);
         return new CalendarHolder(itemView);
     }
 
@@ -59,7 +62,7 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.Calend
         Map<String, Object> params = new HashMap<>();
         MonthBean bean = mDatas.get(position);
         params.put(CalendarContanst.PARAMS_CURRENT_YEAR, mCurrentYear);
-        params.put(CalendarContanst.PARAMS_CURRENT_MONTH, mCurrentMonth);
+        params.put(CalendarContanst.PARAMS_CURRENT_MONTH, mCurrentMonth - 1);
         params.put(CalendarContanst.PARAMS_CURRENT_DAY, mCurrentDay);
         params.put(CalendarContanst.PARAMS_MONTH_DATA, bean);
         holder.calendarItemView.reuse();
@@ -76,13 +79,6 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.Calend
         return 5;
     }
 
-    @Override
-    public void onViewRecycled(CalendarHolder holder) {
-        Log.e("tag", "des:" + holder.calendarItemView.getTag());
-        super.onViewRecycled(holder);
-
-    }
-
     class CalendarHolder extends RecyclerView.ViewHolder {
         final CalendarItemView calendarItemView;
 
@@ -92,5 +88,26 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.Calend
         }
     }
 
+    @Override
+    public void dayClick(int year, int month, int day, int week) {
+        if (mDatas != null) {
+            for (int i = 0; i < mDatas.size(); i++) {
+                MonthBean monthBean = mDatas.get(i);
+                if (monthBean.getYear() == year && monthBean.getMonth() == month) {
+                    mDatas.get(i).updateSelectedDay(day - 1);
+                } else {
+                    mDatas.get(i).clearSelectedDay();
+                }
+            }
+            notifyDataSetChanged();
+        }
+        if (mIDayItemClickListener != null) {
+            mIDayItemClickListener.dayClick(year, month, day, week);
+        }
 
+    }
+
+    public void setIDayItemClickListener(CalendarItemView.IDayItemClickListener mIDayItemClickListener) {
+        this.mIDayItemClickListener = mIDayItemClickListener;
+    }
 }

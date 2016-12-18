@@ -43,4 +43,22 @@ public class MonthBean {
     public void setDays(List<DayBean> days) {
         this.days = days;
     }
+
+
+    public void updateSelectedDay(int day) {
+        for (int i = 0; i < days.size(); i++) {
+            days.get(i).setTip(false);
+            days.get(i).setTip(null);
+        }
+        days.get(day).setTip(true);
+      // days.get(day).setTip(tip);
+    }
+    public void clearSelectedDay() {
+        for (int i = 0; i < days.size(); i++) {
+            days.get(i).setTip(false);
+            days.get(i).setTip(null);
+        }
+    }
+
+
 }

@@ -10,5 +10,9 @@
         <attr name="calendarDayTvSize" format="dimension" />
         <attr name="calendarDayTvColor" format="color" />
         <attr name="calendarDayLayH" format="dimension" />
+        <attr name="calendarTipTvSize" format="dimension" />
+        <attr name="calendarTipTvColor" format="color" />
+        <attr name="calendarTodayBg" format="reference" />
+        <attr name="calendarSelectedBg" format="reference" />
     </declare-styleable>
 </resources>

@@ -1,8 +1,9 @@
 <resources>
     <dimen name="calendarDateTvSize">16sp</dimen>
-    <dimen name="calendarDateLayH">48dp</dimen>
+    <dimen name="calendarDateLayH">30dp</dimen>
     <dimen name="calendarWeekTvSize">16sp</dimen>
-    <dimen name="calendarWeekLayH">48dp</dimen>
+    <dimen name="calendarWeekLayH">30dp</dimen>
     <dimen name="calendarDayTvSize">16sp</dimen>
-    <dimen name="calendarDayLayH">48dp</dimen>
+    <dimen name="calendarTipTvSize">14sp</dimen>
+    <dimen name="calendarDayLayH">55dp</dimen>
 </resources>
