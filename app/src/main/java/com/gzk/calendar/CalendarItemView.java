@@ -13,7 +13,11 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.gzk.calendar.bean.MonthBean;
+import com.gzk.calendar.util.CalendarContanst;
 import com.gzk.calendar.util.CalendarUtils;
+
+import java.util.Map;
 
 /**
  * Created by guozhk on 2016/12/17.
@@ -49,8 +53,16 @@ public class CalendarItemView extends FrameLayout {
     private int day;
     private TypedArray mTypedArray;
 
+
+    private Context mContext;
+    private int mCurrentYear;
+    private int mCurrentMonth;
+    private int mCurrentDay;
+    private MonthBean mMonthBean;
+
     public CalendarItemView(Context context, TypedArray typedArray) {
         super(context);
+        mContext = context;
         Resources resources = context.getResources();
         this.mTypedArray = typedArray;
         mDateTvSize = typedArray.getDimensionPixelSize(R.styleable.customCalendar_calendarDateTvSize,
@@ -86,14 +98,14 @@ public class CalendarItemView extends FrameLayout {
         mWeekLayout = (LinearLayout) view.findViewById(R.id.calendar_week_layout);
         mContentLayout = (LinearLayout) view.findViewById(R.id.calendar_layout);
 
-        initDate(context);
+        initDate();
         //星期lable
         initWeek(context);
         //日期
-        initDay(context);
+        //initDay(context);
     }
 
-    private void initDate(Context context) {
+    private void initDate() {
         LinearLayout.LayoutParams dateItemLp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                 mDateLayoutH);
         mTvDateLable.setTextSize(TypedValue.COMPLEX_UNIT_PX, mDateTvSize);
@@ -122,21 +134,23 @@ public class CalendarItemView extends FrameLayout {
         }
     }
 
-    private void initDay(Context context) {
-        int startPos = CalendarUtils.getWeekByDate("2016-2-1");
-        int numDay = CalendarUtils.getDaysInMonth(1, 2016);
+    private void initDay(MonthBean bean) {
+        mContentLayout.removeAllViews();
+        String date = bean.getYear() + "-" + (bean.getMonth() + 1) + "-1";
+        int startPos = CalendarUtils.getWeekByDate(date);
+        int numDay = bean.getDayNum();
         double d = ((numDay + startPos) * 1d) / 7;
         int row = (int) Math.ceil(d);
         //日期具体数字
         for (int i = 0; i < row; i++) {
             LinearLayout.LayoutParams dayItemLp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, mDayTvLayoutH);
-            LinearLayout dayHRItemLayout = new LinearLayout(context);
+            LinearLayout dayHRItemLayout = new LinearLayout(mContext);
             dayHRItemLayout.setLayoutParams(dayItemLp);
             dayHRItemLayout.setOrientation(LinearLayout.HORIZONTAL);
             for (int j = 0; j < 7; j++) {
                 LinearLayout.LayoutParams dayLp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                         ViewGroup.LayoutParams.WRAP_CONTENT);
-                TextView tvDay = new TextView(context);
+                TextView tvDay = new TextView(mContext);
                 tvDay.setGravity(Gravity.CENTER);
                 tvDay.setTextColor(mDayTvColor);
                 dayLp.weight = 1;
@@ -151,6 +165,36 @@ public class CalendarItemView extends FrameLayout {
                 }
             }
             mContentLayout.addView(dayHRItemLayout);
+        }
+    }
+
+
+    public void reuse() {
+        requestLayout();
+    }
+
+    public void setParams(Map<String, Object> params) {
+        if (params.isEmpty()) {
+            System.out.println("no params...");
+            return;
+        }
+        setTag(params);
+
+        mCurrentYear = (int) params.get(CalendarContanst.PARAMS_CURRENT_YEAR);
+        mCurrentMonth = (int) params.get(CalendarContanst.PARAMS_CURRENT_MONTH);
+        mCurrentDay = (int) params.get(CalendarContanst.PARAMS_CURRENT_DAY);
+        mMonthBean = (MonthBean) params.get(CalendarContanst.PARAMS_MONTH_DATA);
+        if (mMonthBean == null) {
+            return;
+        }
+        updateLable();
+
+        initDay(mMonthBean);
+    }
+
+    private void updateLable() {
+        if (mMonthBean != null) {
+            mTvDateLable.setText(mMonthBean.getYear() + "年" + (mMonthBean.getMonth() + 1) + "月");
         }
     }
 

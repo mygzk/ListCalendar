@@ -52,7 +52,7 @@ public class MyCalendarView extends RecyclerView {
     }
 
     public void updateItemCount() {
-        int count = 0;
+      /*  int count = 0;
         int year = CalendarUtils.getCurrentYear();
         int month = CalendarUtils.getCurrentMonth();
         if (mMaxYear == 0 || mMaxYear <= year) {
@@ -64,7 +64,9 @@ public class MyCalendarView extends RecyclerView {
         count = (mMaxYear - mMinYear - 1) * 12;
         mAdapter.updateCount(count);
         int pos = (mMaxYear - year) * 12 + month;
-        mLayoutManager.scrollToPositionWithOffset(pos, 0);
+        mLayoutManager.scrollToPositionWithOffset(pos, 0);*/
+
+        mAdapter.updateCount(50);
     }
 
 
