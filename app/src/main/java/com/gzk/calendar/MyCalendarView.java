@@ -8,7 +8,12 @@ import android.support.v7.widget.OrientationHelper;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 
+import com.gzk.calendar.bean.MonthBean;
 import com.gzk.calendar.util.CalendarUtils;
+import com.gzk.calendar.util.DateUtil;
+import com.gzk.calendar.view.LoadMoreRecyclerView;
+
+import java.util.List;
 
 /**
  * Created by guozhk on 2016/12/17.
@@ -50,6 +55,17 @@ public class MyCalendarView extends RecyclerView {
         mAdapter = new CalendarAdapter(context, mTypedArray);
         setAdapter(mAdapter);
         updateItemCount();
+    }
+
+    public void addSelectedTip() {
+        mAdapter.addSelectedTip();
+    }
+    public void addBeforOneData() {
+        List<MonthBean> datas= mAdapter.getmDatas();
+        if(datas!=null&&datas.size()>0){
+            mAdapter.addBefor(DateUtil.getBefore(datas.get(0).getYear(), datas.get(0).getMonth(), 1));
+        }
+      //  mAdapter.addBefor(DateUtil.getBefore(2016, 11, 12));
     }
 
 

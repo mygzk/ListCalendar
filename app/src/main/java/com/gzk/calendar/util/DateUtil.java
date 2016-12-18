@@ -13,6 +13,31 @@ import java.util.List;
  */
 
 public class DateUtil {
+    public static List<MonthBean> getBefore(int currentYear, int currenMonth, int monthNums) {
+        List<MonthBean> monthBeanList = new ArrayList<>();
+        //   for (int i = 0; i < monthNums; i++) {
+        for (int i = monthNums; i > 0; i--) {
+            MonthBean bean = new MonthBean();
+            int nextMonth = 0;
+            int nextYear = 0;
+            if (currenMonth == 0) {
+                nextMonth = 11;
+                nextYear = currentYear - 1;
+            } else {
+                int addMonth = currenMonth - i;
+                nextMonth = addMonth % 12;
+                int yearD = addMonth / 12;
+                nextYear = currentYear - yearD;
+            }
+            bean.setMonth(nextMonth);
+            bean.setYear(nextYear);
+            bean.setDayNum(CalendarUtils.getDaysInMonth(nextMonth, nextYear));
+            bean.setDays(getDays(CalendarUtils.getDaysInMonth(nextMonth, nextYear)));
+            monthBeanList.add(bean);
+        }
+        return monthBeanList;
+    }
+
     public static List<MonthBean> getAfter(int currentYear, int currenMonth, int monthNums) {
       /*  Log.e("Test", "currenMonth:" + currenMonth);
         Log.e("Test", "monthNums:" + monthNums);*/

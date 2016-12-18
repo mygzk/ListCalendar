@@ -47,6 +47,27 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.Calend
         mCurrentDay = CalendarUtils.getCurrentDay();
         mDatas.addAll(DateUtil.getAfter(mCurrentYear, mCurrentMonth - 1, mCount));
         notifyDataSetChanged();
+
+    }
+
+    public void addSelectedTip() {
+        if (mDatas.isEmpty()) {
+            return;
+        }
+        for (int i = 0; i < mDatas.size(); i++) {
+            mDatas.get(0).addSelectedDay(10, "值班");
+            mDatas.get(2).addSelectedDay(12, "值班");
+        }
+        notifyDataSetChanged();
+    }
+
+    public List<MonthBean> getmDatas() {
+        return mDatas;
+    }
+
+    public void addBefor(List<MonthBean> befor){
+        mDatas.addAll(0,befor);
+        notifyDataSetChanged();
     }
 
     @Override
@@ -58,7 +79,6 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarAdapter.Calend
 
     @Override
     public void onBindViewHolder(CalendarHolder holder, int position) {
-        final CalendarItemView view = holder.calendarItemView;
         Map<String, Object> params = new HashMap<>();
         MonthBean bean = mDatas.get(position);
         params.put(CalendarContanst.PARAMS_CURRENT_YEAR, mCurrentYear);

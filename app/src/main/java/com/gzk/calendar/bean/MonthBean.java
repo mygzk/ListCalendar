@@ -47,17 +47,24 @@ public class MonthBean {
 
     public void updateSelectedDay(int day) {
         for (int i = 0; i < days.size(); i++) {
-            days.get(i).setTip(false);
-            days.get(i).setTip(null);
+            days.get(i).setChecked(false);
+           // days.get(i).setChecked(null);
         }
-        days.get(day).setTip(true);
-      // days.get(day).setTip(tip);
+        days.get(day).setChecked(true);
     }
+
     public void clearSelectedDay() {
         for (int i = 0; i < days.size(); i++) {
-            days.get(i).setTip(false);
+            days.get(i).setChecked(false);
+            //days.get(i).setChecked(null);
+        }
+    }
+
+    public void addSelectedDay(int day, String tip) {
+        for (int i = 0; i < days.size(); i++) {
             days.get(i).setTip(null);
         }
+        days.get(day).setTip(tip);
     }
 
 

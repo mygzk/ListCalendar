@@ -14,4 +14,7 @@
 
     <color name="bg_today">#056df5</color>
     <color name="bg_select">#d0ce5454</color>
+
+
+    <color name="global_bg">#eeeff3</color>
 </resources>

@@ -6,7 +6,6 @@ import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -196,7 +195,7 @@ public class CalendarItemView extends FrameLayout {
                 tvLp.setMargins(0, 0, 0, (mDayTvLayoutH / 6));
                 TextView tvDay = new TextView(mContext);
 
-                tvDay.setGravity(Gravity.CENTER_VERTICAL|Gravity.CENTER_HORIZONTAL);
+                tvDay.setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL);
                 tvDay.setTextColor(mDayTvColor);
                 tvDay.setLayoutParams(tvLp);
 
@@ -235,16 +234,21 @@ public class CalendarItemView extends FrameLayout {
                     if (bean.getYear() == mCurrentYear && bean.getMonth() == mCurrentMonth && day == mCurrentDay) {
                         tvDay.setTextColor(mDayTodayTvColor);
                         bgImg.setImageDrawable(mContext.getResources().getDrawable(R.drawable.bag_current_circle));
-                       // tvDay.setBackground(mContext.getResources().getDrawable(R.drawable.bag_current_circle));
+                        // tvDay.setBackground(mContext.getResources().getDrawable(R.drawable.bag_current_circle));
                     } else {
-                        if (bean.getDays().get(day - 1).isTip()) {
+                        if (bean.getDays().get(day - 1).isChecked()) {
                             tvDay.setTextColor(mDaySelectTvColor);
-                           // tvDay.setBackground(mContext.getResources().getDrawable(R.drawable.bag_select_circle));
+                            // tvDay.setBackground(mContext.getResources().getDrawable(R.drawable.bag_select_circle));
                             bgImg.setImageDrawable(mContext.getResources().getDrawable(R.drawable.bag_select_circle));
                            /* if (mSelectedBitmap != null) {
                                 bgImg.setImageBitmap(mSelectedBitmap);
                             }*/
+
                         }
+                    }
+
+                    if (bean.getDays().get(day - 1).getTip() != null && !"".equals(bean.getDays().get(day - 1).getTip())) {
+                        tvTip.setText(bean.getDays().get(day - 1).getTip());
                     }
 
                     tbFrameLayout.addView(bgImg);

@@ -6,7 +6,7 @@ package com.gzk.calendar.bean;
 
 public class DayBean {
     private int day;
-    private boolean isTip = false;
+    private boolean isChecked = false;
     private String tip;
 
 
@@ -18,12 +18,12 @@ public class DayBean {
         this.day = day;
     }
 
-    public boolean isTip() {
-        return isTip;
+    public boolean isChecked() {
+        return isChecked;
     }
 
-    public void setTip(boolean tip) {
-        isTip = tip;
+    public void setChecked(boolean checked) {
+        isChecked = checked;
     }
 
     public String getTip() {

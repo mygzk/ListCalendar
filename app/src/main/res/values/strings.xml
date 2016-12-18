@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">CalendarSimple</string>
+
+    <string name="rv_loading">加载中...</string>
 </resources>
